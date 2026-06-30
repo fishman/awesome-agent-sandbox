@@ -46,7 +46,13 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 ## Process Sandboxes
 
-- **[sandlock](https://github.com/multikernel/sandlock)** - Landlock + seccomp-bpf, no root, no cgroups, no containers. ~5ms startup (~44x faster than Docker for short commands). Programmable runtime policies via seccomp user notification. Copy-on-write workspace with commit/abort/dry-run. HTTP proxy with method/host/path ACL. Port virtualization for multi-sandbox parallelism. Linux 6.12+. ASPLOS 2026 paper.
+- **[ai-jail](https://github.com/akitaonrails/ai-jail)** - Bubblewrap + Landlock + seccomp on Linux, Seatbelt on macOS. Per-project `.ai-jail` config. Replaces `$HOME` with tmpfs, COW overlay mounts so agents can experiment without touching originals. Lockdown mode (read-only project, ephemeral home, no network). Glob-based masking for sensitive files (`.env`, `credentials.json`). Browser isolation profiles. Built for Claude Code, Codex, OpenCode.
+
+- **[nono](https://github.com/lukehinds/nono)** - Capability-based security shell, no daemon, no container, no VM. Landlock on Linux, Seatbelt on macOS. Agent gets read/write only to the current directory - SSH keys, cloud credentials, rest of disk invisible. Agent profile registry at registry.nono.sh. Composable policies: filesystem scope, network allowlisting, credential injection, L7 filtering. Snapshots with atomic rollback. Cryptographic audit trail.
+
+- **[sandbox-runtime](https://github.com/anthropic-experimental/sandbox-runtime)** (`srt`) - Powers Claude Code's built-in sandbox. Bubblewrap + seccomp on Linux, Seatbelt on macOS. Filesystem read/write path controls with glob patterns. Domain allow/deny lists via host-side HTTP/SOCKS5 proxy. Unix socket controls. Real-time violation monitoring. CLI + Node.js library.
+
+- **[isol8](https://github.com/mdnmdn/isol8)** - Cross-platform (Landlock + namespaces on Linux, Seatbelt on macOS, Win32 hook DLL). ~70 embedded TOML profiles with inheritance and auto-detection of agent type. Deny-by-default path access at none/ro/rw levels. `$HOME` replacement with optional seed from real home. Environment sanitization. Policy introspection with dry-run mode.
 
 ## Comparison
 
@@ -70,7 +76,10 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | locki | Lima VM + Incus | Minutes | Git worktrees, instant host sync | Bridged | Git worktrees | Claude, Codex, Gemini |
 | machine | Lima VM (Apple VZ) | VM boot | No host FS mount, clone inside VM | Host-only default | Persistent VM | Claude Code, Codex |
 | nilbox | Full VM (VZ/QEMU) | VM boot | FUSE-over-VSOCK | Agent Firewall (default-deny, domain gating) | Persistent VM | Claude Code, Codex, Gemini |
-| sandlock | Landlock + seccomp | ~5ms | Landlock rules + COW + chroot | HTTP proxy ACL | COW workspace (commit/abort) | Any CLI |
+| ai-jail | bwrap + Landlock + seccomp | Instant | Project dir only, tmpfs home | Optional, unshared in lockdown | COW overlays | Claude Code, Codex, OpenCode |
+| nono | Landlock / Seatbelt | Instant | Current dir only, rest of disk invisible | Host allowlist | Snapshots | Claude Code, Codex, Copilot |
+| srt | bwrap + seccomp / Seatbelt | Instant | Path allow/deny with glob patterns | Domain allow/deny via proxy | Ephemeral | Any CLI |
+| isol8 | Landlock + namespaces / Seatbelt | Instant | Deny-by-default, per-path none/ro/rw | Deferred | Ephemeral home replacement | Auto-detect (~70 profiles) |
 
 ## Contributing
 
