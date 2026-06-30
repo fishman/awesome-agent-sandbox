@@ -48,11 +48,11 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 - **[ai-jail](https://github.com/akitaonrails/ai-jail)** - Bubblewrap + Landlock + seccomp on Linux, Seatbelt on macOS. Per-project `.ai-jail` config. Replaces `$HOME` with tmpfs, COW overlay mounts so agents can experiment without touching originals. Lockdown mode (read-only project, ephemeral home, no network). Glob-based masking for sensitive files (`.env`, `credentials.json`). Browser isolation profiles. Built for Claude Code, Codex, OpenCode.
 
-- **[nono](https://github.com/lukehinds/nono)** - Capability-based security shell, no daemon, no container, no VM. Landlock on Linux, Seatbelt on macOS. Agent gets read/write only to the current directory - SSH keys, cloud credentials, rest of disk invisible. Agent profile registry at registry.nono.sh. Composable policies: filesystem scope, network allowlisting, credential injection, L7 filtering. Snapshots with atomic rollback. Cryptographic audit trail.
+- **[nono](https://github.com/lukehinds/nono)** - Landlock on Linux, Seatbelt on macOS. Agent gets read/write only to the current directory - SSH keys, cloud credentials, rest of disk invisible. Profile registry, composable policies (filesystem scope, network allowlisting, credential injection, L7 filtering). Snapshots with atomic rollback. Cryptographic audit trail.
 
 - **[sandbox-runtime](https://github.com/anthropic-experimental/sandbox-runtime)** (`srt`) - Powers Claude Code's built-in sandbox. Bubblewrap + seccomp on Linux, Seatbelt on macOS. Filesystem read/write path controls with glob patterns. Domain allow/deny lists via host-side HTTP/SOCKS5 proxy. Unix socket controls. Real-time violation monitoring. CLI + Node.js library.
 
-- **[isol8](https://github.com/mdnmdn/isol8)** - Cross-platform (Landlock + namespaces on Linux, Seatbelt on macOS, Win32 hook DLL). ~70 embedded TOML profiles with inheritance and auto-detection of agent type. Deny-by-default path access at none/ro/rw levels. `$HOME` replacement with optional seed from real home. Environment sanitization. Policy introspection with dry-run mode.
+- **[isol8](https://github.com/mdnmdn/isol8)** **[SUSPICIOUS - see caveat below]** - Cross-platform (Landlock + namespaces on Linux, Seatbelt on macOS, Win32 hook DLL). ~70 embedded TOML profiles with inheritance and auto-detection of agent type. Deny-by-default path access at none/ro/rw levels. `$HOME` replacement with optional seed from real home. Environment sanitization. Policy introspection with dry-run mode.
 
 ## Comparison
 
@@ -79,7 +79,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | ai-jail | bwrap + Landlock + seccomp | Instant | Project dir only, tmpfs home | Optional, unshared in lockdown | COW overlays | Claude Code, Codex, OpenCode |
 | nono | Landlock / Seatbelt | Instant | Current dir only, rest of disk invisible | Host allowlist | Snapshots | Claude Code, Codex, Copilot |
 | srt | bwrap + seccomp / Seatbelt | Instant | Path allow/deny with glob patterns | Domain allow/deny via proxy | Ephemeral | Any CLI |
-| isol8 | Landlock + namespaces / Seatbelt | Instant | Deny-by-default, per-path none/ro/rw | Deferred | Ephemeral home replacement | Auto-detect (~70 profiles) |
+| isol8 **[SUSPICIOUS]** | Landlock + namespaces / Seatbelt | Instant | Deny-by-default, per-path none/ro/rw | Deferred | Ephemeral home replacement | Auto-detect (~70 profiles) |
 
 ## Contributing
 
@@ -88,5 +88,14 @@ PRs welcome. Criteria:
 - Runs on developer machines
 - Reasonable resource footprint
 - Built for or applicable to AI coding agent use cases
+- Recently maintained (commits within the last few weeks)
 
 Format: repo link, one paragraph on isolation model, key features, supported agents. Update the comparison table if the tool adds a new category or changes key dimensions.
+
+## Caveats
+
+**isol8** is flagged as suspicious and not recommended. Rationale:
+- Claims "v0.2.6" but has only 2 releases, both on the same day (June 23, 2026). No v0.1.x series exists. The version number is fabricated to appear mature.
+- Majority of commits authored by "Claude" (AI-generated code), merged by a human. This is a security sandbox tool -- AI-generated security code with no reviewable provenance is inherently untrustworthy.
+- Entire commit history spans ~48 hours. The repo was created, populated, and "released" in a single AI-assisted sprint.
+- For a tool that controls filesystem access, network policy, and process confinement, the attack surface introduced by AI-generated code with no human review is unacceptable.
