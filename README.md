@@ -42,6 +42,8 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 - **[OpenShell](https://github.com/NVIDIA/OpenShell)** - NVIDIA's agent sandbox runtime. Policy-enforced containers with declarative YAML for filesystem (Landlock), network (OPA proxy), process (seccomp BPF), and inference access. Hot-reload network/inference policies without restart. Credentials injected as env vars at runtime, never on disk.
 
+- **[SandBase Harness](https://github.com/sandbaseai/sandbase-harness)** - Self-hosted agent runtime with per-session Docker and Kubernetes sandboxes, MCP tool permissions, approvals, credentials, and audit/replay.
+
 ## VM-Based
 
 - **[locki](https://github.com/JanPokorny/locki)** - Lima VM + Incus containers with a command bridge that filters git operations. Agents write only to namespaced branches; stashes scoped, hooks redirected. Worktree-backed storage at `~/.local/share/locki/worktrees/` - edits appear on the host instantly. Host home and `.git` invisible to the agent. Supports containers, systemd, and Kubernetes inside the sandbox. Bundles Mise. `locki ai` (interactive), `locki exec` (direct) with auto port collision avoidance.
@@ -82,6 +84,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | agent-sandbox (marvincaspar) | Docker (cap-drop=ALL) | Seconds | Bind-mount current dir | Optional proxy allowlist | Persistent volumes | Claude Code, Codex, Gemini |
 | sandboxed.sh | systemd-nspawn | Container | Per-mission directories | Host/managed | Persistent containers | Claude Code, OpenCode, Codex, Gemini, Grok |
 | OpenShell | Policy-enforced container | Seconds | Project dir, env-based credentials | OPA proxy, hot-reload policies | Ephemeral by default | Any CLI (YAML policy) |
+| SandBase Harness | Docker / Kubernetes | Seconds | Per-session workspace | MCP permissions and approvals | Persistent sessions, audit/replay | MCP clients / agent runtime |
 | locki | Lima VM + Incus | Minutes | Git worktrees, instant host sync | Bridged | Git worktrees | Claude, Codex, Gemini |
 | machine | Lima VM (Apple VZ) | VM boot | No host FS mount, clone inside VM | Host-only default | Persistent VM | Claude Code, Codex |
 | nilbox | Full VM (VZ/QEMU) | VM boot | FUSE-over-VSOCK | Agent Firewall (default-deny, domain gating) | Persistent VM | Claude Code, Codex, Gemini |
