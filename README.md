@@ -41,6 +41,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 - **[sandboxed.sh](https://github.com/Th0rgal/sandboxed.sh)** - Self-hosted orchestrator using systemd-nspawn containers for per-mission isolation. Multi-runtime: Claude Code, OpenCode, Codex, Gemini, Grok. Git-backed Library for skills/tools/rules/agents/MCPs. Scheduled cron-like automations, model routing with failover. Web dashboard (Next.js) + iOS app.
 
 - **[OpenShell](https://github.com/NVIDIA/OpenShell)** - NVIDIA's agent sandbox runtime. Policy-enforced containers with declarative YAML for filesystem (Landlock), network (OPA proxy), process (seccomp BPF), and inference access. Hot-reload network/inference policies without restart. Credentials injected as env vars at runtime, never on disk.
+- **[SandBase Harness](https://github.com/sandbaseai/sandbase-harness)** - Local-first, self-hosted TypeScript agent runtime with persistent sessions, sandboxed tools, MCP integration, managed credentials, audit logs, and replayable runs.
 
 ## VM-Based
 
