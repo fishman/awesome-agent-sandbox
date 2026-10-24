@@ -50,6 +50,8 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 - **[nilbox](https://github.com/rednakta/nilbox)** - Desktop app running a full Linux VM per project (macOS Virtualization.framework, Linux/Windows QEMU). Zero Token Architecture: agent only sees dummy env vars (`OPENAI_API_KEY=OPENAI_API_KEY`); host proxy swaps real tokens for trusted domains. Agent Firewall with human-in-the-loop domain gating (Allow Once/Always/Deny), DNS blocklists, per-provider spending caps. FUSE-over-VSOCK file mapping. Encrypted KeyStore via SQLCipher + OS keyring.
 
+- **[vmforai](https://github.com/emincan2000/vmforai)** - Full libvirt/KVM (QEMU) VMs on a Linux host, or any VM reachable over SSH (VirtualBox, Hyper-V, a cloud server). Every start takes a snapshot first, so `vmforai undo` rolls back everything the agent did in that session. Creates VMs from official Debian, Ubuntu and Arch cloud images. No host filesystem mounted: a git repo goes in as a bundle over SSH and the agent's work comes back as a branch, so no GitHub keys in the VM. Optional egress allowlist enforced on the host (nwfilter + proxy). Background tasks, the same task on several copy-on-write VM clones, issue-to-PR runs with the tests run in the VM, a terminal UI and a phone page. Claude Code, Codex, Gemini CLI, OpenCode, aider; Windows guests for Claude Code.
+
 ## Process Sandboxes
 
 - **[ai-jail](https://github.com/akitaonrails/ai-jail)** - Bubblewrap + Landlock + seccomp on Linux, Seatbelt on macOS. Per-project `.ai-jail` config. Replaces `$HOME` with tmpfs, COW overlay mounts so agents can experiment without touching originals. Lockdown mode (read-only project, ephemeral home, no network). Glob-based masking for sensitive files (`.env`, `credentials.json`). Browser isolation profiles. Built for Claude Code, Codex, OpenCode.
@@ -85,6 +87,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | locki | Lima VM + Incus | Minutes | Git worktrees, instant host sync | Bridged | Git worktrees | Claude, Codex, Gemini |
 | machine | Lima VM (Apple VZ) | VM boot | No host FS mount, clone inside VM | Host-only default | Persistent VM | Claude Code, Codex |
 | nilbox | Full VM (VZ/QEMU) | VM boot | FUSE-over-VSOCK | Agent Firewall (default-deny, domain gating) | Persistent VM | Claude Code, Codex, Gemini |
+| vmforai | Full VM (libvirt/KVM) | VM boot | No host FS mount, git bundles in and out | Host default, optional allowlist (nwfilter + proxy) | Persistent VM, snapshot per session | Claude Code, Codex, Gemini, OpenCode, aider |
 | ai-jail | bwrap + Landlock + seccomp | Instant | Project dir only, tmpfs home | Optional, unshared in lockdown | COW overlays | Claude Code, Codex, OpenCode |
 | nono | Landlock / Seatbelt | Instant | Current dir only, rest of disk invisible | Host allowlist | Snapshots | Claude Code, Codex, Copilot |
 | srt | bwrap + seccomp / Seatbelt | Instant | Path allow/deny with glob patterns | Domain allow/deny via proxy | Ephemeral | Any CLI |
