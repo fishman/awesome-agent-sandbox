@@ -26,6 +26,8 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 - **[bromure](https://github.com/rderaison/bromure)** - macOS app by Renaud Deraison (Nessus). Disposable Linux VMs via Virtualization.framework, destroyed on window close. Focus on web browsing and agentic coding in the same sandbox. Host-side MITM proxy swaps fake credentials for real ones - secrets never enter the VM. Supply-chain scanning, prompt-injection detection, multi-model panel. Claude Code, Codex. macOS 14+, Apple Silicon.
 
+- **[CubePod](https://github.com/cubeplexai/cubepod)** - Self-hosted Kata Containers microVM sandbox (Kubernetes or single-node Docker Compose on Linux). Dual persistent raw block ext4 volumes decouple writable OS RootFS (`apt`/`pip`/`npm` survive restarts) from `/workspace` via a Rust PID 1 `pivot_root` mounter (`podd-init`). <50ms warm-pool claims, <1s Copy-on-Write volume forks, zero-export suspend (`fsfreeze` to 0 CPU/RAM), and `cpodref_` mTLS egress secret brokering so real API keys never enter the guest. 100% E2B SDK wire-compatible plus Python/TS/Go SDKs.
+
 ## Container Sandboxes
 
 - **[agent-sandbox](https://github.com/thomaspeklak/agent-sandbox)** - Rust CLI (`ags`), rootless Podman containers. Supports Claude, Codex, Gemini, OpenCode, Pi, and interactive shells. Hardened lockdown mode for untrusted repos (no secrets, no SSH agent, no host bridges). Clipboard bridge, OAuth proxy, browser sidecar, host UI via Glimpse. TOML config with per-repo overlays.
@@ -75,6 +77,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | strangeClaw | Firecracker | VM boot | Via request broker | Via broker | Per-session VM | Autonomous |
 | matchlock | Firecracker + VZ | Sub-second | OCI images, overlay mounts | MITM proxy, allowlist | Ephemeral, vanishes on cleanup | Claude Code, Codex |
 | bromure | VZ.framework (macOS) | VM boot | Disposable VM, destroyed on close | MITM proxy, domain allowlist | Ephemeral | Claude Code, Codex |
+| CubePod | Kata microVM (KVM) | <50ms (warm pool) | Dual block ext4 (RootFS + `/workspace`) | `nftables` allow/deny + mTLS secret proxy | Persistent, COW fork | E2B-compatible, any CLI |
 | agent-sandbox (thomaspeklak) | Rootless Podman | Seconds | Bind-mount repo | Configurable bridges | Persistent volumes | Claude, Codex, Gemini, Pi, OpenCode |
 | yolobox | Docker | Seconds | Project dir only, home stays on host | Optional (`--no-network`) | Persistent volumes | Claude Code, Codex, Gemini, OpenCode, Copilot, Pi |
 | hort | OCI container (user namespaces) | Seconds | Git worktree (throwaway branch) | Egress allowlist | Disposable worktree | Claude Code, Aider, Gemini CLI |
