@@ -26,6 +26,8 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 
 - **[bromure](https://github.com/rderaison/bromure)** - macOS app by Renaud Deraison (Nessus). Disposable Linux VMs via Virtualization.framework, destroyed on window close. Focus on web browsing and agentic coding in the same sandbox. Host-side MITM proxy swaps fake credentials for real ones - secrets never enter the VM. Supply-chain scanning, prompt-injection detection, multi-model panel. Claude Code, Codex. macOS 14+, Apple Silicon.
 
+- **[virtx](https://github.com/brekkylab/virtx)** - libkrun microVMs, each with its own Linux kernel, on KVM (Linux), Hypervisor.framework (macOS, Apple Silicon) or the Windows Hypervisor Platform (Windows 11). No Docker or daemon: `Client.spawn()` runs a local server as a child process, and the same client API talks to a self-hosted TCP server or virtx cloud. Any OCI image from Docker Hub or a registry, or a recipe/Dockerfile build. Network can be cut off per sandbox, ports reachable from the host, volumes persist and can be shared across sandboxes, host GPU via Vulkan. Python, Node and Rust SDKs, plus a skill so Claude Code and Codex can drive sandboxes. Apache-2.0.
+
 ## Container Sandboxes
 
 - **[agent-sandbox](https://github.com/thomaspeklak/agent-sandbox)** - Rust CLI (`ags`), rootless Podman containers. Supports Claude, Codex, Gemini, OpenCode, Pi, and interactive shells. Hardened lockdown mode for untrusted repos (no secrets, no SSH agent, no host bridges). Clipboard bridge, OAuth proxy, browser sidecar, host UI via Glimpse. TOML config with per-repo overlays.
@@ -75,6 +77,7 @@ Portable, lightweight, self-contained sandboxes for AI coding agents - microVMs,
 | strangeClaw | Firecracker | VM boot | Via request broker | Via broker | Per-session VM | Autonomous |
 | matchlock | Firecracker + VZ | Sub-second | OCI images, overlay mounts | MITM proxy, allowlist | Ephemeral, vanishes on cleanup | Claude Code, Codex |
 | bromure | VZ.framework (macOS) | VM boot | Disposable VM, destroyed on close | MITM proxy, domain allowlist | Ephemeral | Claude Code, Codex |
+| virtx | libkrun microVM (KVM/HVF/WHP) | Not specified | OCI images, volumes, file read/write from code | Can be cut off entirely, port forwarding to host | Persistent volumes, writable layer dropped on removal | Claude Code, Codex (skill), any SDK caller |
 | agent-sandbox (thomaspeklak) | Rootless Podman | Seconds | Bind-mount repo | Configurable bridges | Persistent volumes | Claude, Codex, Gemini, Pi, OpenCode |
 | yolobox | Docker | Seconds | Project dir only, home stays on host | Optional (`--no-network`) | Persistent volumes | Claude Code, Codex, Gemini, OpenCode, Copilot, Pi |
 | hort | OCI container (user namespaces) | Seconds | Git worktree (throwaway branch) | Egress allowlist | Disposable worktree | Claude Code, Aider, Gemini CLI |
